@@ -1,4 +1,5 @@
 export interface Token {
-  id: string;
+  address: string;
   name: string;
+  code?: string;
 }
