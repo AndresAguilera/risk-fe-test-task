@@ -12,7 +12,7 @@ export const tokens: Token[] = [
     code: "USDC",
   },
   {
-    address: "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+    address: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
     name: "Uniswap",
     code: "UNI",
   },

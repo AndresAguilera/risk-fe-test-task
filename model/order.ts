@@ -3,9 +3,9 @@ export interface Order {
   sender: string;
   maker: string;
   taker: string;
-  takerTokenFeeAmount: number | string;
-  makerAmount: number | string;
-  takerAmount: number | string;
+  takerTokenFeeAmount: number;
+  makerAmount: number;
+  takerAmount: number;
   makerToken: string;
   takerToken: string;
   salt: number;
