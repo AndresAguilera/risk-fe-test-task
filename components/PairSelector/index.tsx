@@ -4,19 +4,22 @@ import { PairContext } from "@/pages";
 
 interface PairSelectorProps {}
 const PairSelector: FC<PairSelectorProps> = () => {
-  const { token1, token2, setToken1, setToken2 } = useContext(PairContext);
+  const { quoteToken, baseToken, setBaseToken, setQuoteToken } =
+    useContext(PairContext);
 
   return (
     <div className="flex flex-col space-y-8">
       <h1 className="text-2xl font-bold">Select a trading pair</h1>
-      <div className="flex space-x-4">
+      <div className="flex space-x-4 items-center">
+        Base:
         <Select
-          tokenAddress={token1}
-          onChange={(e) => setToken1(e.target.value)}
+          tokenAddress={baseToken}
+          onChange={(e) => setBaseToken(e.target.value)}
         />
+        Quote:
         <Select
-          tokenAddress={token2}
-          onChange={(e) => setToken2(e.target.value)}
+          tokenAddress={quoteToken}
+          onChange={(e) => setQuoteToken(e.target.value)}
         />
       </div>
     </div>

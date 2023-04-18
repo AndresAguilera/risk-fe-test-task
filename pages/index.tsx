@@ -4,29 +4,29 @@ import { tokens } from "@/data/mock";
 import OrderBook from "@/components/OrderBook";
 
 const defaultValues: {
-  token1: string;
-  token2: string;
-  setToken1: Dispatch<any>;
-  setToken2: Dispatch<any>;
+  baseToken: string;
+  quoteToken: string;
+  setBaseToken: Dispatch<any>;
+  setQuoteToken: Dispatch<any>;
 } = {
-  token1: tokens[0].address,
-  token2: tokens[1].address,
-  setToken1: () => {},
-  setToken2: () => {},
+  quoteToken: tokens[0].address,
+  baseToken: tokens[1].address,
+  setBaseToken: () => {},
+  setQuoteToken: () => {},
 };
 
 export const PairContext = createContext(defaultValues);
 
 export default function Home() {
-  const [token1, setToken1] = useState<string>(tokens[0].address);
-  const [token2, setToken2] = useState<string>(tokens[1].address);
+  const [baseToken, setBaseToken] = useState<string>(tokens[0].address);
+  const [quoteToken, setQuoteToken] = useState<string>(tokens[1].address);
   return (
     <PairContext.Provider
       value={{
-        token1,
-        token2,
-        setToken1,
-        setToken2,
+        baseToken,
+        quoteToken,
+        setBaseToken,
+        setQuoteToken,
       }}
     >
       <main>

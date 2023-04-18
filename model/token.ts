@@ -1,5 +1,8 @@
 export interface Token {
   address: string;
   name: string;
-  code?: string;
+  symbol?: string;
+  decimals?: number;
+  chainId?: number;
+  logoURI?: string;
 }

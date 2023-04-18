@@ -3,6 +3,6 @@ import { fetchOrderBook, FetchOrderBookArgs } from "@/data/api/0x";
 
 export const useOrderBook = (data: FetchOrderBookArgs) =>
   useQuery({
-    queryKey: ["order book", data.token1, data.token2],
+    queryKey: ["order book", data.baseToken, data.quoteToken],
     queryFn: () => fetchOrderBook(data),
   });

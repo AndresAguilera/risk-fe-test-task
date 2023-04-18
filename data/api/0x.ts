@@ -1,9 +1,9 @@
 export interface FetchOrderBookArgs {
-  token1: string;
-  token2: string;
+  baseToken: string;
+  quoteToken: string;
 }
 
-export const fetchOrderBook = ({ token1, token2 }: FetchOrderBookArgs) =>
+export const fetchOrderBook = ({ baseToken, quoteToken }: FetchOrderBookArgs) =>
   fetch(
-    `https://api.0x.org/orderbook/v1?quoteToken=${token1}&baseToken=${token2}`
+    `https://api.0x.org/orderbook/v1?quoteToken=${quoteToken}&baseToken=${baseToken}`
   ).then((res) => res.json());
