@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext } from "react";
 import { Order } from "@/model/order";
 import { useOrderBook } from "@/hooks/useOrderBook";
 import { PairContext } from "@/pages";
@@ -16,10 +16,8 @@ const OrderBook: React.FC = () => {
 
   const currentCurrency = getCodeByAddress(quoteToken);
 
-  const bids: OrderBookRow[] = useMemo(() => {
-    if (!data?.bids) return [];
-
-    const orders = data.bids.records.map((record: any) => {
+  const bids: OrderBookRow[] =
+    data?.bids?.records?.map((record: any) => {
       const order: Order = record.order;
       const decimals = getTokenByAddress(order.makerToken)?.decimals;
       const quantity = formatCurrency(order.makerAmount, decimals);
@@ -27,6 +25,7 @@ const OrderBook: React.FC = () => {
         order.takerAmount / order.makerAmount,
         decimals
       );
+
       const total = 0;
 
       return {
@@ -35,23 +34,18 @@ const OrderBook: React.FC = () => {
         quantity,
         total,
       };
-    });
+    }) || [];
 
-    orders.forEach((order: OrderBookRow, i: number) => {
-      if (i === 0) {
-        order.total = Number(order.quantity);
-      } else {
-        order.total = Number(order.quantity) + orders[i - 1].total;
-      }
-    });
+  bids.forEach((bid, i) => {
+    if (i === 0) {
+      bid.total = Number(bid.quantity);
+    } else {
+      bid.total = Number(bid.quantity) + bids[i - 1].total;
+    }
+  });
 
-    return orders;
-  }, [data?.bids]);
-
-  const asks: OrderBookRow[] = useMemo(() => {
-    if (!data?.asks) return [];
-
-    const orders = data.asks.records.map((record: any) => {
+  const asks: OrderBookRow[] =
+    data?.asks?.records?.map((record: any) => {
       const order: Order = record.order;
       const decimals = getTokenByAddress(order.takerToken)?.decimals;
       const quantity = formatCurrency(order.takerAmount, decimals);
@@ -59,6 +53,7 @@ const OrderBook: React.FC = () => {
         order.makerAmount / order.takerAmount,
         decimals
       );
+
       const total = 0;
 
       return {
@@ -67,18 +62,15 @@ const OrderBook: React.FC = () => {
         quantity,
         total,
       };
-    });
+    }) || [];
 
-    orders.forEach((order: OrderBookRow, i: number) => {
-      if (i === 0) {
-        order.total = Number(order.quantity);
-      } else {
-        order.total = Number(order.quantity) + orders[i - 1].total;
-      }
-    });
-
-    return orders;
-  }, [data?.asks]);
+  asks.forEach((ask, i) => {
+    if (i === 0) {
+      ask.total = Number(ask.quantity);
+    } else {
+      ask.total = Number(ask.quantity) + asks[i - 1].total;
+    }
+  });
 
   return (
     <div className="flex justify-between">
