@@ -1,12 +1,11 @@
 import React, { useContext } from 'react'
 import { useOrderBook } from '@/hooks/useOrderBook'
-import { PairContext } from '@/pages'
 import { getCodeByAddress } from '@/utils'
+import { PairContext } from '@/context/tokenPair'
 
 const OrderBook: React.FC = () => {
     const { baseToken, quoteToken } = useContext(PairContext)
     const { asks, bids } = useOrderBook({ baseToken, quoteToken })
-    // useSubscription({ makerToken: baseToken, takerToken: quoteToken })
 
     const currentCurrency = getCodeByAddress(quoteToken)
 
@@ -24,7 +23,7 @@ const OrderBook: React.FC = () => {
                     </thead>
                     <tbody>
                         {bids?.map((bid, i) => (
-                            <tr key={bid.chainId + bid.takerToken + i}>
+                            <tr key={bid.salt + i}>
                                 <td className="text-green-500">{bid.price}</td>
                                 <td>{bid.quantity}</td>
                                 <td>{bid.total}</td>
@@ -45,7 +44,7 @@ const OrderBook: React.FC = () => {
                     </thead>
                     <tbody>
                         {asks?.map((ask, i) => (
-                            <tr key={ask.chainId + ask.makerToken + i}>
+                            <tr key={ask.salt + i}>
                                 <td className="text-red-500">{ask.price}</td>
                                 <td>{ask.quantity}</td>
                                 <td>{ask.total}</td>

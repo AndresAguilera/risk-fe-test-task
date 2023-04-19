@@ -25,9 +25,9 @@ interface ResponseMessage {
     requestId: string
 }
 
-const useSubscription = ({ makerToken = '', takerToken = '' }: useSubscriptionProps) => {
+const useSubscription = ({ makerToken, takerToken }: useSubscriptionProps) => {
     const queryClient = useQueryClient()
-    const [orders, setOrders] = useState<Order[]>([])
+    const [newRecords, setNewRecords] = useState()
 
     useEffect(() => {
         const websocket = new WebSocket(
@@ -48,19 +48,27 @@ const useSubscription = ({ makerToken = '', takerToken = '' }: useSubscriptionPr
         websocket.onerror = (error) => {
             console.error('WebSocket error:', error)
         }
-        websocket.onmessage = (event) => {
-            const data: ResponseMessage = JSON.parse(event.data)
-            const order: Order = data.payload[0].order
-            setOrders([...orders, order])
+        websocket.onmessage = async (event) => {
+            const data = JSON.parse(event.data)
+            const newRecords = data.payload
+            setNewRecords(newRecords)
+            const isBid = newRecords[0].order.takerToken === takerToken
+            const askOrBid = isBid ? 'bids' : 'asks'
+            console.log('new orders', newRecords[0].order.makerToken, isBid)
+            const queryKey = ['order book', makerToken, takerToken]
+            queryClient.setQueriesData(queryKey, (oldData: any) => ({
+                ...oldData,
+                [askOrBid]: {
+                    ...oldData[askOrBid],
+                    records: [...oldData[askOrBid].records, ...newRecords],
+                },
+            }))
         }
         return () => {
             websocket.close()
         }
     }, [makerToken, takerToken, queryClient])
-
-    useEffect(() => {
-        console.log({ orders })
-    }, [orders])
+    return newRecords
 }
 
 export default useSubscription

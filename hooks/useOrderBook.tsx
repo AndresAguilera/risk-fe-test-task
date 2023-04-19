@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchOrderBook, FetchOrderBookArgs } from '@/data/api/0x'
 import { Order } from '@/model/order'
 import { considerDecimals, getTokenByAddress } from '@/utils'
+import useSubscription from '@/hooks/useSubscription'
 
 export interface OrderBookRow extends Order {
     price: number
@@ -17,11 +18,19 @@ const addTotal = (rows: OrderBookRow[]) =>
             row.total = row.quantity + rows[i - 1].total
         }
     })
+
+export const processAsks = () => {}
+
+export const processBids = () => {}
+
 export const useOrderBook = ({ baseToken, quoteToken }: FetchOrderBookArgs) => {
     const query = useQuery({
         queryKey: ['order book', baseToken, quoteToken],
         queryFn: () => fetchOrderBook({ baseToken, quoteToken }),
     })
+
+    const newRecords = useSubscription({ makerToken: baseToken, takerToken: quoteToken })
+
     const bids: OrderBookRow[] =
         query.data?.bids?.records?.map((record: any) => {
             const order: Order = record.order
