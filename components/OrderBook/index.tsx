@@ -2,8 +2,7 @@ import React, { useContext } from 'react'
 import { Order } from '@/model/order'
 import { useOrderBook } from '@/hooks/useOrderBook'
 import { PairContext } from '@/pages'
-import { formatCurrency, getCodeByAddress, getTokenByAddress } from '@/utils'
-import useSubscription from '@/hooks/useSubscription'
+import { considerDecimals, getCodeByAddress, getTokenByAddress } from '@/utils'
 
 interface OrderBookRow extends Order {
     price: number
@@ -14,63 +13,63 @@ interface OrderBookRow extends Order {
 const OrderBook: React.FC = () => {
     const { baseToken, quoteToken } = useContext(PairContext)
     const { data } = useOrderBook({ baseToken, quoteToken })
-    useSubscription({ makerToken: baseToken, takerToken: quoteToken })
+    // useSubscription({ makerToken: baseToken, takerToken: quoteToken })
 
     const currentCurrency = getCodeByAddress(quoteToken)
 
     const bids: OrderBookRow[] =
-        data?.bids?.records
-            ?.map((record: any) => {
-                const order: Order = record.order
-                const decimals = getTokenByAddress(order.makerToken)?.decimals
-                const quantity = formatCurrency(order.makerAmount, decimals)
-                const price = formatCurrency(order.takerAmount / order.makerAmount, decimals)
+        data?.bids?.records?.map((record: any) => {
+            const order: Order = record.order
+            const maker = getTokenByAddress(order.makerToken)
+            const taker = getTokenByAddress(order.takerToken)
+            const quantity = considerDecimals(order.makerAmount, maker?.decimals)
+            const takerAmount = considerDecimals(order.takerAmount, taker?.decimals)
+            const makerAmount = considerDecimals(order.makerAmount, maker?.decimals)
+            const price = makerAmount / takerAmount
 
-                const total = 0
-
-                return {
-                    ...order,
-                    price,
-                    quantity,
-                    total,
-                }
-            })
-            .reverse() || []
-
-    bids.forEach((bid, i) => {
-        if (i === 0) {
-            bid.total = bid.quantity
-        } else {
-            bid.total = bid.quantity + bids[i - 1].total
-        }
-    })
+            return {
+                ...order,
+                price,
+                quantity,
+                total: 0,
+            }
+        }) || []
 
     const asks: OrderBookRow[] =
-        data?.asks?.records
-            ?.map((record: any) => {
-                const order: Order = record.order
-                const decimals = getTokenByAddress(order.takerToken)?.decimals
-                const quantity = formatCurrency(order.takerAmount, decimals)
-                const price = formatCurrency(order.makerAmount / order.takerAmount, decimals)
+        data?.asks?.records?.map((record: any) => {
+            const order: Order = record.order
 
-                const total = 0
+            const maker = getTokenByAddress(order.makerToken)
+            const taker = getTokenByAddress(order.takerToken)
 
-                return {
-                    ...order,
-                    price,
-                    quantity,
-                    total,
-                }
-            })
-            .reverse() || []
+            const makerDecimals = maker?.decimals
+            const takerDecimals = taker?.decimals
 
-    asks.forEach((ask, i) => {
-        if (i === 0) {
-            ask.total = ask.quantity
-        } else {
-            ask.total = ask.quantity + asks[i - 1].total
-        }
-    })
+            const quantity = considerDecimals(order.takerAmount, takerDecimals)
+
+            const takerAmount = considerDecimals(order.takerAmount, takerDecimals)
+            const makerAmount = considerDecimals(order.makerAmount, makerDecimals)
+            const price = takerAmount / makerAmount
+
+            return {
+                ...order,
+                price,
+                quantity,
+                total: 0,
+            }
+        }) || []
+
+    const addTotal = (rows: OrderBookRow[]) =>
+        rows.forEach((row, i) => {
+            if (i === 0) {
+                row.total = row.quantity
+            } else {
+                row.total = row.quantity + rows[i - 1].total
+            }
+        })
+
+    addTotal(bids)
+    addTotal(asks)
 
     return (
         <div className="flex justify-between">
