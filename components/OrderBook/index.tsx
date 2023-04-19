@@ -3,6 +3,7 @@ import { Order } from "@/model/order";
 import { useOrderBook } from "@/hooks/useOrderBook";
 import { PairContext } from "@/pages";
 import { formatCurrency, getCodeByAddress, getTokenByAddress } from "@/utils";
+import useSubscription from "@/hooks/useSubscription";
 
 interface OrderBookRow extends Order {
   price: number;
@@ -13,6 +14,7 @@ interface OrderBookRow extends Order {
 const OrderBook: React.FC = () => {
   const { baseToken, quoteToken } = useContext(PairContext);
   const { data } = useOrderBook({ baseToken, quoteToken });
+  useSubscription({ makerToken: baseToken, takerToken: quoteToken });
 
   const currentCurrency = getCodeByAddress(quoteToken);
 
