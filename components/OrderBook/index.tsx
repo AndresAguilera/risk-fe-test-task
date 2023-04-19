@@ -17,58 +17,62 @@ const OrderBook: React.FC = () => {
   const currentCurrency = getCodeByAddress(quoteToken);
 
   const bids: OrderBookRow[] =
-    data?.bids?.records?.map((record: any) => {
-      const order: Order = record.order;
-      const decimals = getTokenByAddress(order.makerToken)?.decimals;
-      const quantity = formatCurrency(order.makerAmount, decimals);
-      const price = formatCurrency(
-        order.takerAmount / order.makerAmount,
-        decimals
-      );
+    data?.bids?.records
+      ?.map((record: any) => {
+        const order: Order = record.order;
+        const decimals = getTokenByAddress(order.makerToken)?.decimals;
+        const quantity = formatCurrency(order.makerAmount, decimals);
+        const price = formatCurrency(
+          order.takerAmount / order.makerAmount,
+          decimals
+        );
 
-      const total = 0;
+        const total = 0;
 
-      return {
-        ...order,
-        price,
-        quantity,
-        total,
-      };
-    }) || [];
+        return {
+          ...order,
+          price,
+          quantity,
+          total,
+        };
+      })
+      .reverse() || [];
 
   bids.forEach((bid, i) => {
     if (i === 0) {
-      bid.total = Number(bid.quantity);
+      bid.total = bid.quantity;
     } else {
-      bid.total = Number(bid.quantity) + bids[i - 1].total;
+      bid.total = bid.quantity + bids[i - 1].total;
     }
   });
 
   const asks: OrderBookRow[] =
-    data?.asks?.records?.map((record: any) => {
-      const order: Order = record.order;
-      const decimals = getTokenByAddress(order.takerToken)?.decimals;
-      const quantity = formatCurrency(order.takerAmount, decimals);
-      const price = formatCurrency(
-        order.makerAmount / order.takerAmount,
-        decimals
-      );
+    data?.asks?.records
+      ?.map((record: any) => {
+        const order: Order = record.order;
+        const decimals = getTokenByAddress(order.takerToken)?.decimals;
+        const quantity = formatCurrency(order.takerAmount, decimals);
+        const price = formatCurrency(
+          order.makerAmount / order.takerAmount,
+          decimals
+        );
 
-      const total = 0;
+        const total = 0;
 
-      return {
-        ...order,
-        price,
-        quantity,
-        total,
-      };
-    }) || [];
+        return {
+          ...order,
+          price,
+          quantity,
+          total,
+        };
+      })
+      .reverse() || [];
 
   asks.forEach((ask, i) => {
     if (i === 0) {
-      ask.total = Number(ask.quantity);
+      ask.total = ask.quantity;
     } else {
-      ask.total = Number(ask.quantity) + asks[i - 1].total;
+      ask.total = ask.quantity + asks[i - 1].total;
     }
   });
 
