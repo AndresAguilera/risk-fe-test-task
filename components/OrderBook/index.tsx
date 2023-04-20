@@ -22,7 +22,7 @@ const OrderBook: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {bids?.map((bid, i) => (
+                        {bids?.slice(0, 20).map((bid, i) => (
                             <tr key={bid.salt + i}>
                                 <td className="text-green-500">{bid.price}</td>
                                 <td>{bid.quantity}</td>
@@ -43,7 +43,7 @@ const OrderBook: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {asks?.map((ask, i) => (
+                        {asks?.slice(0, 20).map((ask, i) => (
                             <tr key={ask.salt + i}>
                                 <td className="text-red-500">{ask.price}</td>
                                 <td>{ask.quantity}</td>

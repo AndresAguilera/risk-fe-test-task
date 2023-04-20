@@ -1,7 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Order } from '@/model/order'
+import { OrderBookRow, processRecords } from '@/hooks/useOrderBook'
 
 interface useSubscriptionProps {
     makerToken?: string
@@ -13,8 +14,8 @@ interface SubscriptionMessage {
     channel: 'orders'
     requestId?: string
     payload?: {
-        makerToken: string
-        takerToken: string
+        makerToken?: string
+        takerToken?: string
     }
 }
 
@@ -27,48 +28,49 @@ interface ResponseMessage {
 
 const useSubscription = ({ makerToken, takerToken }: useSubscriptionProps) => {
     const queryClient = useQueryClient()
-    const [newRecords, setNewRecords] = useState()
 
     useEffect(() => {
-        const websocket = new WebSocket(
-            `wss://api.0x.org/orderbook/v1?makerToken=${makerToken}&takerToken=${takerToken}`
-        )
+        const websocket = new WebSocket(`wss://api.0x.org/orderbook/v1`)
         websocket.onopen = () => {
             console.log('Connected to WebSocket')
             const subscriptionMessage: SubscriptionMessage = {
                 type: 'subscribe',
                 channel: 'orders',
                 requestId: uuidv4(),
+                payload: { takerToken, makerToken },
             }
             websocket.send(JSON.stringify(subscriptionMessage))
         }
-        websocket.onclose = (ev) => {
-            console.log('WebSocket connection closed', ev.code)
-        }
-        websocket.onerror = (error) => {
-            console.error('WebSocket error:', error)
-        }
+        websocket.onclose = (ev) => console.log('WebSocket connection closed', ev.code)
+        websocket.onerror = (error) => console.error('WebSocket error:', error.type)
+
         websocket.onmessage = async (event) => {
-            const data = JSON.parse(event.data)
-            const newRecords = data.payload
-            setNewRecords(newRecords)
-            const isBid = newRecords[0].order.takerToken === takerToken
+            const records = JSON.parse(event.data).payload
+
+            // const rTakerToken = records[0].order.takerToken
+            // const rMakerToken = records[0].order.makerToken
+            // const isBid = rMakerToken === makerToken && rTakerToken === takerToken
+            const isBid = !!Math.round(Math.random())
             const askOrBid = isBid ? 'bids' : 'asks'
-            console.log('new orders', newRecords[0].order.makerToken, isBid)
+
             const queryKey = ['order book', makerToken, takerToken]
+            const processedRecords: OrderBookRow[] = processRecords(records, isBid, true)
+
             queryClient.setQueriesData(queryKey, (oldData: any) => ({
                 ...oldData,
                 [askOrBid]: {
                     ...oldData[askOrBid],
-                    records: [...oldData[askOrBid].records, ...newRecords],
+                    records: [
+                        ...oldData[askOrBid].records,
+                        ...processedRecords.map((r) => {
+                            return { order: r }
+                        }),
+                    ],
                 },
             }))
         }
-        return () => {
-            websocket.close()
-        }
+        return () => websocket.close()
     }, [makerToken, takerToken, queryClient])
-    return newRecords
 }
 
 export default useSubscription

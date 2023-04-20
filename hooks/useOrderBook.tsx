@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchOrderBook, FetchOrderBookArgs } from '@/data/api/0x'
 import { Order } from '@/model/order'
 import { considerDecimals, getTokenByAddress } from '@/utils'
+import { useMemo } from 'react'
 import useSubscription from '@/hooks/useSubscription'
 
 export interface OrderBookRow extends Order {
@@ -18,60 +19,53 @@ const addTotal = (rows: OrderBookRow[]) =>
             row.total = row.quantity + rows[i - 1].total
         }
     })
-
-export const processAsks = () => {}
-
-export const processBids = () => {}
+export const processRecords = (
+    records: { order: Order; metadata?: any }[],
+    isBid: boolean,
+    ws: boolean = false // TODO: used for testing for now, DELETE ME
+): OrderBookRow[] =>
+    records
+        ?.map((record: any) => {
+            const order: Order = record.order
+            const maker = getTokenByAddress(order.makerToken)
+            const taker = getTokenByAddress(order.takerToken)
+            const quantity = considerDecimals(
+                isBid ? order.makerAmount : order.takerAmount,
+                isBid ? maker?.decimals : taker?.decimals
+            )
+            const takerAmount = considerDecimals(order.takerAmount, taker?.decimals)
+            const makerAmount = considerDecimals(order.makerAmount, maker?.decimals)
+            const price = isBid ? makerAmount / takerAmount : takerAmount / makerAmount
+            if (ws) {
+                console.log(order.makerToken, order.takerToken)
+            }
+            return {
+                ...order,
+                price,
+                quantity,
+                total: 0,
+            }
+        })
+        .sort((a, b) => (!isBid ? a.price - b.price : b.price - a.price)) || []
 
 export const useOrderBook = ({ baseToken, quoteToken }: FetchOrderBookArgs) => {
     const query = useQuery({
         queryKey: ['order book', baseToken, quoteToken],
         queryFn: () => fetchOrderBook({ baseToken, quoteToken }),
+        refetchOnWindowFocus: false,
     })
 
-    const newRecords = useSubscription({ makerToken: baseToken, takerToken: quoteToken })
+    useSubscription({ makerToken: baseToken, takerToken: quoteToken })
 
-    const bids: OrderBookRow[] =
-        query.data?.bids?.records?.map((record: any) => {
-            const order: Order = record.order
-            const maker = getTokenByAddress(order.makerToken)
-            const taker = getTokenByAddress(order.takerToken)
-            const quantity = considerDecimals(order.makerAmount, maker?.decimals)
-            const takerAmount = considerDecimals(order.takerAmount, taker?.decimals)
-            const makerAmount = considerDecimals(order.makerAmount, maker?.decimals)
-            const price = makerAmount / takerAmount
+    const bids: OrderBookRow[] = useMemo(
+        () => processRecords(query.data?.bids?.records, true),
+        [query]
+    )
 
-            return {
-                ...order,
-                price,
-                quantity,
-                total: 0,
-            }
-        }) || []
-
-    const asks: OrderBookRow[] =
-        query.data?.asks?.records?.map((record: any) => {
-            const order: Order = record.order
-
-            const maker = getTokenByAddress(order.makerToken)
-            const taker = getTokenByAddress(order.takerToken)
-
-            const makerDecimals = maker?.decimals
-            const takerDecimals = taker?.decimals
-
-            const quantity = considerDecimals(order.takerAmount, takerDecimals)
-
-            const takerAmount = considerDecimals(order.takerAmount, takerDecimals)
-            const makerAmount = considerDecimals(order.makerAmount, makerDecimals)
-            const price = takerAmount / makerAmount
-
-            return {
-                ...order,
-                price,
-                quantity,
-                total: 0,
-            }
-        }) || []
+    const asks: OrderBookRow[] = useMemo(
+        () => processRecords(query.data?.asks?.records, false),
+        [query]
+    )
 
     addTotal(bids)
     addTotal(asks)
