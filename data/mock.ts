@@ -24,6 +24,20 @@ export const tokens: Token[] = [
         logoURI: 'ipfs://Qmc2N4CsWDH3ZnnggcvbF8dN1JYsKTUyh3rdj5NBZH9KKL',
     },
     {
+        name: 'WadzPay Token',
+        decimals: 18,
+        symbol: 'WTK',
+        address: '0x4cff49d0a19ed6ff845a9122fa912abcfb1f68a6'.toLowerCase(),
+        chainId: 1,
+    },
+    {
+        name: 'Audius',
+        decimals: 18,
+        symbol: 'AUDIO',
+        address: '0x18aAA7115705e8be94bfFEBDE57Af9BFc265B998'.toLowerCase(),
+        chainId: 1,
+    },
+    {
         name: 'Wrapped BTC',
         decimals: 8,
         symbol: 'WBTC',
@@ -35,6 +49,13 @@ export const tokens: Token[] = [
         decimals: 18,
         symbol: 'DAI',
         address: '0x6B175474E89094C44Da98b954EedeAC495271d0F'.toLowerCase(),
+        chainId: 1,
+    },
+    {
+        name: 'Injective Token',
+        decimals: 18,
+        symbol: 'INJ',
+        address: '0xe28b3B32B6c345A34Ff64674606124Dd5Aceca30'.toLowerCase(),
         chainId: 1,
     },
     {

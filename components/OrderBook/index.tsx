@@ -1,58 +1,54 @@
 import React, { useContext } from 'react'
-import { useOrderBook } from '@/hooks/useOrderBook'
-import { getCodeByAddress } from '@/utils'
+import { OrderBookRow, useOrderBook } from '@/hooks/useOrderBook'
+import { getNameByAddress } from '@/utils'
 import { PairContext } from '@/context/tokenPair'
 
 const OrderBook: React.FC = () => {
     const { baseToken, quoteToken } = useContext(PairContext)
     const { asks, bids } = useOrderBook({ baseToken, quoteToken })
 
-    const currentCurrency = getCodeByAddress(quoteToken)
+    const currentCurrency = getNameByAddress(quoteToken)
+
+    const renderTable = (orders: OrderBookRow[], isBid: boolean) => {
+        return (
+            <div className="flex-1 pr-4">
+                <h2 className="text-2xl font-semibold mb-2">{isBid ? 'Bids' : 'Asks'}</h2>
+                <table className="w-full">
+                    <thead>
+                        <tr>
+                            <th className="text-left">Price ({currentCurrency})</th>
+                            <th className="text-left">Quantity ({currentCurrency})</th>
+                            <th className="text-left">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders?.slice(0, 20).map((order, i) => (
+                            <tr key={order.salt + i}>
+                                <td className={`text-${isBid ? 'green' : 'red'}-500`}>
+                                    {order.price}
+                                </td>
+                                <td>{order.quantity}</td>
+                                <td>{order.total}</td>
+                                {/*<td>*/}
+                                {/*    {getNameByAddress(order.makerToken.toString()) ||*/}
+                                {/*        order.makerToken.toString()}*/}
+                                {/*</td>*/}
+                                {/*<td>*/}
+                                {/*    {getNameByAddress(order.takerToken.toString()) ||*/}
+                                {/*        order.takerToken.toString()}*/}
+                                {/*</td>*/}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
 
     return (
         <div className="flex justify-between">
-            <div className="flex-1 pr-4">
-                <h2 className="text-2xl font-semibold mb-2">Bids</h2>
-                <table className="w-full">
-                    <thead>
-                        <tr>
-                            <th className="text-left">Price ({currentCurrency})</th>
-                            <th className="text-left">Quantity ({currentCurrency})</th>
-                            <th className="text-left">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {bids?.slice(0, 20).map((bid, i) => (
-                            <tr key={bid.salt + i}>
-                                <td className="text-green-500">{bid.price}</td>
-                                <td>{bid.quantity}</td>
-                                <td>{bid.total}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-            <div className="flex-1 pl-4">
-                <h2 className="text-2xl font-semibold mb-2">Asks</h2>
-                <table className="w-full">
-                    <thead>
-                        <tr>
-                            <th className="text-left">Price ({currentCurrency})</th>
-                            <th className="text-left">Quantity ({currentCurrency})</th>
-                            <th className="text-left">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {asks?.slice(0, 20).map((ask, i) => (
-                            <tr key={ask.salt + i}>
-                                <td className="text-red-500">{ask.price}</td>
-                                <td>{ask.quantity}</td>
-                                <td>{ask.total}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            {renderTable(bids, true)}
+            {renderTable(asks, false)}
         </div>
     )
 }

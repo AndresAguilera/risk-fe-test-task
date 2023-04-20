@@ -1,7 +1,7 @@
 import { tokens } from '@/data/mock'
 import { Token } from '@/model/token'
 
-export const getCodeByAddress = (address: string): string =>
+export const getNameByAddress = (address: string): string =>
     tokens.find((tok) => tok.address === address)?.name || ''
 
 export const getTokenByAddress = (address: string): Token | undefined =>

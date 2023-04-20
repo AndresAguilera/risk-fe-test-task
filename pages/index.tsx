@@ -17,9 +17,11 @@ export default function Home() {
             }}
         >
             <main>
-                <div className="h-screen">
-                    <OrderBook />
-                    <PairSelector />
+                <div className="">
+                    <div className={'container'}>
+                        <PairSelector />
+                        <OrderBook />
+                    </div>
                 </div>
             </main>
         </PairContext.Provider>
