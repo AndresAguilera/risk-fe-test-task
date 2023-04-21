@@ -12,6 +12,6 @@ export const considerDecimals = (amount: number, decimals: number = 6) => amount
 export const formatCurrency = (amount: number) => {
     return amount.toLocaleString(undefined, {
         minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        maximumFractionDigits: 10,
     })
 }
