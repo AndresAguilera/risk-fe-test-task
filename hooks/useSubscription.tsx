@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { useEffect } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { Order } from '@/model/order'
 import { OrderBookRow, processRecords } from '@/hooks/useOrderBook'
 
 interface useSubscriptionProps {
@@ -17,13 +16,6 @@ interface SubscriptionMessage {
         makerToken?: string
         takerToken?: string
     }
-}
-
-interface ResponseMessage {
-    type: string
-    channel: string
-    payload: { order: Order; metadata: object }[]
-    requestId: string
 }
 
 const useSubscription = ({ makerToken, takerToken }: useSubscriptionProps) => {
@@ -45,12 +37,16 @@ const useSubscription = ({ makerToken, takerToken }: useSubscriptionProps) => {
         websocket.onerror = (error) => console.error('WebSocket error:', error.type)
 
         websocket.onmessage = async (event) => {
-            const records = JSON.parse(event.data).payload
+            const records = JSON.parse(event.data).payload.filter(
+                (record: any) => record?.metaData?.state === 'ADDED'
+            )
+            if (!records.length) return
+            console.log(records[0])
 
-            // const rTakerToken = records[0].order.takerToken
-            // const rMakerToken = records[0].order.makerToken
-            // const isBid = rMakerToken === makerToken && rTakerToken === takerToken
-            const isBid = !!Math.round(Math.random())
+            const rTakerToken = records[0]?.order.takerToken
+            const rMakerToken = records[0]?.order.makerToken
+            const isBid = rMakerToken === makerToken && rTakerToken === takerToken
+            // const isBid = !!Math.round(Math.random())
             const askOrBid = isBid ? 'bids' : 'asks'
 
             const queryKey = ['order book', makerToken, takerToken]

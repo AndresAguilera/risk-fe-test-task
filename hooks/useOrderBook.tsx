@@ -37,7 +37,7 @@ export const processRecords = (
             const makerAmount = considerDecimals(order.makerAmount, maker?.decimals)
             const price = isBid ? makerAmount / takerAmount : takerAmount / makerAmount
             if (ws) {
-                console.log(order.makerToken, order.takerToken)
+                // console.log(order.makerToken, order.takerToken)
             }
             return {
                 ...order,

@@ -20,9 +20,11 @@ export default function Home() {
             }}
         >
             <main className={poppins.className}>
-                <div className="flex flex-col">
-                    <PairSelector />
-                    <OrderBook />
+                <div className="container mx-auto p-4">
+                    <div className="flex flex-col space-y-4 md:space-y-8">
+                        <PairSelector />
+                        <OrderBook />
+                    </div>
                 </div>
             </main>
         </PairContext.Provider>

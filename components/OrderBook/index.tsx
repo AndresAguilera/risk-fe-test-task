@@ -16,11 +16,13 @@ const OrderBook: React.FC = () => {
             <div className="flex-1 pr-4">
                 <h2 className="text-2xl font-semibold mb-2">{isBid ? 'Bids' : 'Asks'}</h2>
                 <table className="w-full bg-white rounded-lg shadow-md overflow-hidden">
-                    <thead>
+                    <thead className={'text-gray-200'}>
                         <tr
-                            className={`bg-gradient-to-${
-                                isBid ? 'r' : 'l'
-                            } from-green-400 to-blue-500 text-gray-200`}
+                            className={`${
+                                isBid
+                                    ? 'bg-gradient-to-r from-green-500 to-blue-500'
+                                    : 'bg-gradient-to-l from-pink-500 to-red-500'
+                            }`}
                         >
                             {headers.map((header) => (
                                 <th

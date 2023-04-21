@@ -495,14 +495,6 @@ export const tokens: Token[] = [
         logoURI: 'ipfs://QmaznB5PRhMC696u8yZuzN6Uwrnp7Zmfa5CydVUMvLJc9i/aUNI%20LINK%20ETH.svg',
     },
     {
-        name: 'USDT',
-        decimals: 6,
-        symbol: 'USDT',
-        address: '0x3Ed3B47Dd13EC9a98b44e6204A523E766B225811'.toLowerCase(),
-        chainId: 1,
-        logoURI: 'ipfs://QmaznB5PRhMC696u8yZuzN6Uwrnp7Zmfa5CydVUMvLJc9i/aUSDT.svg',
-    },
-    {
         name: 'WBTC',
         decimals: 8,
         symbol: 'WBTC',
@@ -629,22 +621,6 @@ export const tokens: Token[] = [
         address: '0x6C5024Cd4F8A59110119C56f8933403A539555EB'.toLowerCase(),
         chainId: 1,
         logoURI: 'ipfs://QmaznB5PRhMC696u8yZuzN6Uwrnp7Zmfa5CydVUMvLJc9i/aSUSD.svg',
-    },
-    {
-        name: 'TUSD',
-        decimals: 18,
-        symbol: 'TUSD',
-        address: '0x101cc05f4A51C0319f570d5E146a8C625198e636'.toLowerCase(),
-        chainId: 1,
-        logoURI: 'ipfs://QmaznB5PRhMC696u8yZuzN6Uwrnp7Zmfa5CydVUMvLJc9i/aTUSD.svg',
-    },
-    {
-        name: 'USDC',
-        decimals: 6,
-        symbol: 'USDC',
-        address: '0xBcca60bB61934080951369a648Fb03DF4F96263C'.toLowerCase(),
-        chainId: 1,
-        logoURI: 'ipfs://QmaznB5PRhMC696u8yZuzN6Uwrnp7Zmfa5CydVUMvLJc9i/aUSDC.svg',
     },
 ]
 
