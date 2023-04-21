@@ -20,7 +20,7 @@ export default function Home() {
             }}
         >
             <main className={poppins.className}>
-                <div className="container mx-auto p-4">
+                <div className="container mx-auto">
                     <div className="flex flex-col space-y-4 md:space-y-8">
                         <PairSelector />
                         <OrderBook />
