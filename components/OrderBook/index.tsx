@@ -18,7 +18,9 @@ const OrderBook: React.FC = () => {
         const headers = ['Price', 'Quantity', 'Total']
         return (
             <div className="flex-1 mr-4 block">
-                <h2 className="text-2xl font-semibold mb-2">{isBid ? 'Bids' : 'Asks'}</h2>
+                <h2 className="text-2xl font-semibold mb-2">
+                    {isBid ? 'Bids' : 'Asks'} ({currentCurrency})
+                </h2>
                 <div className="bg-white rounded-lg shadow-md overflow-hidden text-sm">
                     <div className={`flex ${gradient} text-white font-bold`}>
                         {(isBid ? headers : headers.reverse()).map((header, i) => (
@@ -28,11 +30,14 @@ const OrderBook: React.FC = () => {
                                     i === 1 ? 'hidden lg:block' : ''
                                 }`}
                             >
-                                {header} ({currentCurrency})
+                                {header}
                             </div>
                         ))}
                     </div>
                     {orders?.slice(0, 20).map((order, i) => {
+                        const maxTotal = orders[orders.length - 1].total
+                        const curTotal = order.total
+                        const barWidth = (curTotal / maxTotal) * 13
                         const row = [
                             <div
                                 key={order.price}
@@ -43,8 +48,11 @@ const OrderBook: React.FC = () => {
                             <div key={order.quantity} className="flex-1 py-3 hidden lg:block">
                                 {order.quantity}
                             </div>,
-                            <div key={order.total} className="flex-1 py-3">
-                                <div className={`absolute w-[13%] h-5 bg-${greenOrRed}-200 z-0`} />
+                            <div key={order.total + order.salt + i} className="flex-1 py-3">
+                                <div
+                                    style={{ width: `${barWidth}%` }}
+                                    className={`absolute h-5 bg-${greenOrRed}-200 z-0`}
+                                />
                                 <div className={'z-10 relative'}>{order.total}</div>
                             </div>,
                         ]
