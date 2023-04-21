@@ -3,6 +3,9 @@ import { useState } from 'react'
 import { tokens } from '@/data/mock'
 import OrderBook from '@/components/OrderBook'
 import { PairContext } from '@/context/tokenPair'
+import { Poppins } from 'next/font/google'
+
+const poppins = Poppins({ subsets: ['latin'], weight: '400' })
 
 export default function Home() {
     const [baseToken, setBaseToken] = useState<string>(tokens[0].address)
@@ -16,12 +19,10 @@ export default function Home() {
                 setQuoteToken,
             }}
         >
-            <main>
-                <div className="">
-                    <div className={'container'}>
-                        <PairSelector />
-                        <OrderBook />
-                    </div>
+            <main className={poppins.className}>
+                <div className="flex flex-col">
+                    <PairSelector />
+                    <OrderBook />
                 </div>
             </main>
         </PairContext.Provider>
