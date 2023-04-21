@@ -26,7 +26,7 @@ const OrderTable = ({ orders, type }: OrderTableProps) => {
                         <div
                             key={header + false}
                             className={`flex-1 py-3 px-4 tracking-wider whitespace-nowrap ${
-                                i === 1 ? 'hidden lg:block' : ''
+                                i === 1 ? 'hidden md:block' : ''
                             }`}
                         >
                             {header} ({currentCurrency})
@@ -43,11 +43,11 @@ const OrderTable = ({ orders, type }: OrderTableProps) => {
                     const row = [
                         <div
                             key={order.price + 'price'}
-                            className={`flex-1 text-${greenOrRed}-500 font-medium py-3 pl-2`}
+                            className={`flex-1 text-${greenOrRed}-500 font-medium py-3`}
                         >
                             {formatCurrency(order.price)}
                         </div>,
-                        <div key={order.quantity + 'qty'} className="flex-1 py-3 hidden lg:block">
+                        <div key={order.quantity + 'qty'} className="flex-1 py-3 hidden md:block">
                             {formatCurrency(order.quantity)}
                         </div>,
                         <div
@@ -58,9 +58,7 @@ const OrderTable = ({ orders, type }: OrderTableProps) => {
                         >
                             <div
                                 style={{ width: `${barWidth}%` }}
-                                className={`absolute h-5 bg-${greenOrRed}-200 z-0 ${
-                                    isBid ? '' : ''
-                                }`}
+                                className={`absolute h-5 bg-${greenOrRed}-200 z-0`}
                             />
                             <div
                                 className={`z-10 relative ${
@@ -72,7 +70,10 @@ const OrderTable = ({ orders, type }: OrderTableProps) => {
                         </div>,
                     ]
                     return (
-                        <div key={order.salt + i + 'row'} className="flex hover:bg-gray-200">
+                        <div
+                            key={order.salt + i + 'row'}
+                            className={`flex hover:bg-gray-200 p${isBid ? 'l' : 'r'}-2`}
+                        >
                             {isBid ? row : row.reverse()}
                         </div>
                     )
