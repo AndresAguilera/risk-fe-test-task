@@ -19,8 +19,8 @@ const OrderBook: React.FC = () => {
         return (
             <div className="flex-1 mr-4 block">
                 <h2 className="text-2xl font-semibold mb-2">{isBid ? 'Bids' : 'Asks'}</h2>
-                <table className="w-full bg-white rounded-lg shadow-md overflow-hidden text-sm">
-                    <thead className={'text-gray-200'}>
+                <table className="w-full rounded-lg shadow-md overflow-hidden text-sm">
+                    <thead className={'text-white'}>
                         <tr className={gradient}>
                             {headers.map((header, index) => (
                                 <th
