@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { OrderBookRow, useOrderBook } from '@/hooks/useOrderBook'
-import { getTokenByAddress } from '@/utils'
+import { formatCurrency, getTokenByAddress } from '@/utils'
 import { PairContext } from '@/context/tokenPair'
 
 const OrderBook: React.FC = () => {
@@ -18,46 +18,52 @@ const OrderBook: React.FC = () => {
         const headers = ['Price', 'Quantity', 'Total']
         return (
             <div className="flex-1 mr-4 block">
-                <h2 className="text-2xl font-semibold mb-2">
-                    {isBid ? 'Bids' : 'Asks'} ({currentCurrency})
-                </h2>
                 <div className="bg-white rounded-lg shadow-md overflow-hidden text-sm">
                     <div className={`flex ${gradient} text-white font-bold`}>
                         {(isBid ? headers : headers.reverse()).map((header, i) => (
                             <div
-                                key={header}
+                                key={header + isBid}
                                 className={`flex-1 py-3 px-4 tracking-wider whitespace-nowrap ${
                                     i === 1 ? 'hidden lg:block' : ''
                                 }`}
                             >
-                                {header}
+                                {header} ({currentCurrency})
                             </div>
                         ))}
                     </div>
-                    {orders?.slice(0, 20).map((order, i) => {
-                        const maxTotal = orders[orders.length - 1].total
+                    {orders?.slice(0, 20).map((order, i, array) => {
+                        const maxTotal = orders[array.length - 1].total
                         const curTotal = order.total
-                        const barWidth = (curTotal / maxTotal) * 13
+                        const arbMax = 13
+
+                        const ratio = Math.round((curTotal / maxTotal) * arbMax)
+                        const barWidth = ratio > arbMax ? arbMax : ratio === 0 ? 1 : ratio
                         const row = [
                             <div
-                                key={order.price}
+                                key={order.price + 'price'}
                                 className={`flex-1 text-${greenOrRed}-500 font-medium py-3 pl-2`}
                             >
-                                {order.price}
+                                {formatCurrency(order.price)}
                             </div>,
-                            <div key={order.quantity} className="flex-1 py-3 hidden lg:block">
-                                {order.quantity}
+                            <div
+                                key={order.quantity + 'qty'}
+                                className="flex-1 py-3 hidden lg:block"
+                            >
+                                {formatCurrency(order.quantity)}
                             </div>,
-                            <div key={order.total + order.salt + i} className="flex-1 py-3">
+                            <div
+                                key={order.total + order.salt + i + 'total'}
+                                className="flex-1 py-3"
+                            >
                                 <div
                                     style={{ width: `${barWidth}%` }}
                                     className={`absolute h-5 bg-${greenOrRed}-200 z-0`}
                                 />
-                                <div className={'z-10 relative'}>{order.total}</div>
+                                <div className={'z-10 relative'}>{formatCurrency(order.total)}</div>
                             </div>,
                         ]
                         return (
-                            <div key={order.salt + i} className={`flex hover:bg-gray-200`}>
+                            <div key={order.salt + i + 'row'} className={`flex hover:bg-gray-200`}>
                                 {isBid ? row : row.reverse()}
                             </div>
                         )
