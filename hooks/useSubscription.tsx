@@ -24,7 +24,7 @@ const useSubscription = ({ makerToken, takerToken }: useSubscriptionProps) => {
     useEffect(() => {
         const websocket = new WebSocket(`wss://api.0x.org/orderbook/v1`)
         websocket.onopen = () => {
-            console.log('Connected to WebSocket')
+            console.log('Connected to WebSocket. Waiting for messages...')
             const subscriptionMessage: SubscriptionMessage = {
                 type: 'subscribe',
                 channel: 'orders',
