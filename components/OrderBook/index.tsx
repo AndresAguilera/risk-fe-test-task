@@ -9,9 +9,7 @@ const OrderBook: React.FC = () => {
 
     const currentCurrency = getTokenByAddress(quoteToken)?.symbol
 
-    const headers = [`Price (${currentCurrency})`, `Quantity (${currentCurrency})`, 'Total']
-
-    const renderTable = (orders: OrderBookRow[], isBid: boolean) => {
+    const renderOrders = (orders: OrderBookRow[], isBid: boolean) => {
         const gradient = isBid
             ? 'bg-gradient-to-r from-green-500 to-blue-500'
             : 'bg-gradient-to-l from-pink-500 to-red-500'
@@ -19,45 +17,40 @@ const OrderBook: React.FC = () => {
         return (
             <div className="flex-1 mr-4 block">
                 <h2 className="text-2xl font-semibold mb-2">{isBid ? 'Bids' : 'Asks'}</h2>
-                <table className="w-full rounded-lg shadow-md overflow-hidden text-sm">
-                    <thead className={'text-white'}>
-                        <tr className={gradient}>
-                            {headers.map((header, index) => (
-                                <th
-                                    key={header}
-                                    className={`text-left py-3 px-4 tracking-wider whitespace-nowrap ${
-                                        index === 1 ? 'hidden sm:block' : ''
-                                    }`}
-                                >
-                                    {header}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {orders?.slice(0, 20).map((order, i) => (
-                            <tr key={order.salt + i} className="hover:bg-gray-50">
-                                <td
-                                    className={`text-${
-                                        isBid ? 'green' : 'red'
-                                    }-500 font-medium py-3 pl-2`}
-                                >
-                                    {order.price}
-                                </td>
-                                <td className="py-3 px-4 hidden sm:block">{order.quantity}</td>
-                                <td className="py-3 px-4">{order.total}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <div className="bg-white rounded-lg shadow-md overflow-hidden text-sm">
+                    <div className={`flex ${gradient} text-white`}>
+                        <div className="flex-1 py-3 px-4 tracking-wider whitespace-nowrap">
+                            Price ({currentCurrency})
+                        </div>
+                        <div className="flex-1 py-3 px-4 tracking-wider whitespace-nowrap hidden lg:block">
+                            Quantity ({currentCurrency})
+                        </div>
+                        <div className="flex-1 py-3 px-4 tracking-wider whitespace-nowrap">
+                            Total
+                        </div>
+                    </div>
+                    {orders?.slice(0, 20).map((order, i) => (
+                        <div key={order.salt + i} className={`flex hover:bg-gray-200`}>
+                            <div
+                                className={`flex-1 text-${
+                                    isBid ? 'green' : 'red'
+                                }-500 font-medium py-3 pl-2`}
+                            >
+                                {order.price}
+                            </div>
+                            <div className="flex-1 py-3 px-4 hidden lg:block">{order.quantity}</div>
+                            <div className="flex-1 py-3 px-4">{order.total}</div>
+                        </div>
+                    ))}
+                </div>
             </div>
         )
     }
 
     return (
-        <div className="flex justify-between">
-            {renderTable(bids, true)}
-            {renderTable(asks, false)}
+        <div className="flex flex-col sm:flex-row justify-between">
+            {renderOrders(bids, true)}
+            {renderOrders(asks, false)}
         </div>
     )
 }
