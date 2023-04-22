@@ -47,16 +47,19 @@ const OrderTable = ({ orders, type = 'bids' }: OrderTableProps) => {
                     const row = [
                         <div
                             key={order.price + 'price'}
-                            className={`flex-1 ${textColor} font-medium py-3`}
+                            className={`flex-1 ${textColor} font-medium py-3 px-4`}
                         >
                             {formatCurrency(order.price)}
                         </div>,
-                        <div key={order.quantity + 'qty'} className="flex-1 py-3 hidden md:block">
+                        <div
+                            key={order.quantity + 'qty'}
+                            className="flex-1 py-3 px-4 hidden md:block"
+                        >
                             {formatCurrency(order.quantity)}
                         </div>,
                         <div
                             key={order.total + order.salt + i + 'total'}
-                            className={`flex-1 py-3 ${
+                            className={`flex-1 py-3 px-4 ${
                                 isBid ? 'transform -scale-x-100' : 'transform scale-x-100'
                             }`}
                         >

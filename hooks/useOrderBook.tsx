@@ -1,51 +1,14 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchOrderBook, FetchOrderBookArgs } from '@/data/api/0x'
 import { Order } from '@/model/order'
-import { considerDecimals, getTokenByAddress } from '@/utils'
 import { useEffect, useMemo } from 'react'
 import useSubscription from '@/hooks/useSubscription'
+import { processRecords } from '@/utils'
 
 export interface OrderBookRow extends Order {
     price: number
     quantity: number
     total: number
-}
-
-const addTotal = (rows: OrderBookRow[]) =>
-    rows.forEach((row, i) => {
-        if (i === 0) {
-            row.total = row.quantity
-        } else {
-            row.total = row.quantity + rows[i - 1].total
-        }
-    })
-export const processRecords = (
-    records: { order: Order; metadata?: any }[],
-    isBid: boolean
-): OrderBookRow[] => {
-    const result =
-        records
-            ?.map((record: any) => {
-                const order: Order = record.order
-                const maker = getTokenByAddress(order.makerToken)
-                const taker = getTokenByAddress(order.takerToken)
-                const quantity = considerDecimals(
-                    isBid ? order.makerAmount : order.takerAmount,
-                    isBid ? maker?.decimals : taker?.decimals
-                )
-                const takerAmount = considerDecimals(order.takerAmount, taker?.decimals)
-                const makerAmount = considerDecimals(order.makerAmount, maker?.decimals)
-                const price = isBid ? makerAmount / takerAmount : takerAmount / makerAmount
-                return {
-                    ...order,
-                    price,
-                    quantity,
-                    total: 0,
-                }
-            })
-            .sort((a, b) => (!isBid ? a.price - b.price : b.price - a.price)) || []
-    addTotal(result)
-    return result
 }
 
 export const useOrderBook = ({ baseToken, quoteToken }: FetchOrderBookArgs) => {

@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useState } from 'react'
-import { OrderBookRow, processRecords } from '@/hooks/useOrderBook'
+import { OrderBookRow } from '@/hooks/useOrderBook'
+import { processRecords } from '@/utils'
 
 interface useSubscriptionProps {
     makerToken?: string

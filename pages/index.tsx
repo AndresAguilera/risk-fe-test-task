@@ -4,6 +4,7 @@ import { tokens } from '@/data/mock'
 import OrderBook from '@/components/OrderBook'
 import { PairContext } from '@/context/tokenPair'
 import { Poppins } from 'next/font/google'
+import LiveOrders from '@/components/LiveOrders'
 
 const poppins = Poppins({ subsets: ['latin'], weight: '400' })
 
@@ -23,6 +24,7 @@ export default function Home() {
                 <div className="container mx-auto">
                     <div className="flex flex-col space-y-4 md:space-y-8">
                         <PairSelector />
+                        <LiveOrders />
                         <OrderBook />
                     </div>
                 </div>

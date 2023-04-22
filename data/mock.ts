@@ -180,7 +180,7 @@ export const tokens: Token[] = [
         chainId: 1,
     },
     {
-        name: 'yearn.finance',
+        name: 'Yearn Finance',
         decimals: 18,
         symbol: 'YFI',
         address: '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e'.toLowerCase(),
