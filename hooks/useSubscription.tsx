@@ -1,11 +1,12 @@
 import { v4 as uuidv4 } from 'uuid'
 import { useEffect, useState } from 'react'
 import { OrderBookRow } from '@/hooks/useOrderBook'
-import { processRecords } from '@/utils'
+import { getTokenByAddress, processRecords } from '@/utils'
 
 interface useSubscriptionProps {
     makerToken?: string
     takerToken?: string
+    onlyKnownTokens?: boolean
 }
 
 interface SubscriptionMessage {
@@ -18,7 +19,11 @@ interface SubscriptionMessage {
     }
 }
 
-const useSubscription = ({ makerToken, takerToken }: useSubscriptionProps) => {
+const useSubscription = ({
+    makerToken,
+    takerToken,
+    onlyKnownTokens = false,
+}: useSubscriptionProps) => {
     const [orders, setOrders] = useState<{ order: OrderBookRow }[]>([])
 
     useEffect(() => {
@@ -47,15 +52,19 @@ const useSubscription = ({ makerToken, takerToken }: useSubscriptionProps) => {
 
             const rTakerToken = records[0]?.order.takerToken
             const rMakerToken = records[0]?.order.makerToken
+            if (
+                onlyKnownTokens &&
+                (!getTokenByAddress(rTakerToken) || !getTokenByAddress(rMakerToken))
+            )
+                return
             const isBid = rMakerToken === makerToken && rTakerToken === takerToken
-            // const isBid = !!Math.round(Math.random())
 
             const processedRecords: OrderBookRow[] = processRecords(records, isBid)
             const orders: { order: OrderBookRow }[] = processedRecords.map((r) => ({ order: r }))
             setOrders(orders)
         }
         return () => websocket.close()
-    }, [makerToken, takerToken])
+    }, [makerToken, takerToken, onlyKnownTokens])
     return orders
 }
 
