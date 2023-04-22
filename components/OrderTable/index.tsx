@@ -16,7 +16,7 @@ const OrderTable = ({ orders, type = 'bids' }: OrderTableProps) => {
     const isBid = type === 'bids'
     const currentCurrency = getTokenByAddress(quoteToken)?.symbol
     const headers = ['Price', 'Quantity', 'Total']
-    const textColor = isBid ? 'text-green-500' : 'text-red-500'
+    const textColor = isBid ? 'text-green-600' : 'text-red-600'
     const bgColor = isBid ? 'bg-green-200' : 'bg-red-200'
     const gradient = isBid
         ? 'bg-gradient-to-r from-green-500 to-blue-500'
