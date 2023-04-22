@@ -3,21 +3,25 @@ import { formatCurrency, getTokenByAddress } from '@/utils'
 import { OrderBookRow } from '@/hooks/useOrderBook'
 import { PairContext } from '@/context/tokenPair'
 
+type OrderType = 'bids' | 'asks'
+
 interface OrderTableProps {
     orders: OrderBookRow[]
-    type: 'bids' | 'asks'
+    type: OrderType
 }
 
-const OrderTable = ({ orders, type }: OrderTableProps) => {
+const OrderTable = ({ orders, type = 'bids' }: OrderTableProps) => {
     const { quoteToken } = useContext(PairContext)
 
     const isBid = type === 'bids'
     const currentCurrency = getTokenByAddress(quoteToken)?.symbol
     const headers = ['Price', 'Quantity', 'Total']
-    const greenOrRed = isBid ? 'green' : 'red'
+    const textColor = isBid ? 'text-green-500' : 'text-red-500'
+    const bgColor = isBid ? 'bg-green-200' : 'bg-red-200'
     const gradient = isBid
         ? 'bg-gradient-to-r from-green-500 to-blue-500'
         : 'bg-gradient-to-r from-pink-500 to-red-500'
+
     return (
         <div className="flex-1 mr-4 block">
             <div className="bg-white rounded-lg shadow-lg overflow-hidden text-sm">
@@ -43,7 +47,7 @@ const OrderTable = ({ orders, type }: OrderTableProps) => {
                     const row = [
                         <div
                             key={order.price + 'price'}
-                            className={`flex-1 text-${greenOrRed}-500 font-medium py-3`}
+                            className={`flex-1 ${textColor} font-medium py-3`}
                         >
                             {formatCurrency(order.price)}
                         </div>,
@@ -58,7 +62,7 @@ const OrderTable = ({ orders, type }: OrderTableProps) => {
                         >
                             <div
                                 style={{ width: `${barWidth}%` }}
-                                className={`absolute h-5 bg-${greenOrRed}-200 z-0`}
+                                className={`absolute h-5 ${bgColor} z-0`}
                             />
                             <div
                                 className={`z-10 relative ${
