@@ -20,7 +20,7 @@ const OrderBook: React.FC = () => {
                     can enable this toggle to have any order get added to the table.
                 </p>
                 <div className={'my-2'}>
-                    <span className={'mr-4 italic'}>Show Nonsense</span>
+                    <span className={'mr-4 italic'}>Show Nonsense (any order)</span>
                     <Toggle isOn={showNonsense} handleToggle={handleToggle} />
                 </div>
             </div>
