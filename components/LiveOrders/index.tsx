@@ -41,7 +41,7 @@ const LiveOrders = () => {
                     *The amount of messages received for a specific token pair from the web socket
                     is very low, so you may have to sit there a while to get a visual update for the
                     Order Book UI below. To alleviate that, I have placed this Live Orders component
-                    display ALL the orders added live.
+                    to display ALL the orders added live, just to see some movement.
                 </p>
                 <p>
                     *If the toggle is off, the symbol is only displayed if known; otherwise, it
