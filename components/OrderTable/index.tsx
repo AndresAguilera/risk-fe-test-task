@@ -23,8 +23,8 @@ const OrderTable = ({ orders, type = 'bids' }: OrderTableProps) => {
         : 'bg-gradient-to-r from-pink-500 to-red-500'
 
     return (
-        <div className="flex-1 mr-4 block">
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden text-sm">
+        <div className="flex-1 mr-4 block ">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden text-sm border border-gray-300">
                 <div className={`flex text-white font-bold ${gradient}`}>
                     {(isBid ? headers : headers.reverse()).map((header, i) => (
                         <div
