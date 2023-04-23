@@ -15,9 +15,12 @@ const OrderBook: React.FC = () => {
         <div>
             <div className={'font-extralight text-sm italic text-gray-500 mb-2 my-2'}>
                 <p>
-                    *If you still want to have any update render on the table (even if it
-                    doesn&apos;t correspond to the correct pair) and don&apos;t want to wait, you
-                    can enable this toggle to have any order get added to the table.
+                    *The Order Book is currently subscribed using the selected pair as payload (very
+                    slow updates).
+                </p>
+                <p>
+                    You can disable that by enabling the toggle to watch non-pertinent data (faster)
+                    just to see some action.
                 </p>
                 <div className={'my-2'}>
                     <span className={'mr-4 italic'}>Show Nonsense (any order)</span>
