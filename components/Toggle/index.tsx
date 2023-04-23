@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid'
 import React, { ChangeEventHandler } from 'react'
 
 interface ToggleProps {
@@ -6,18 +7,19 @@ interface ToggleProps {
 }
 
 const Toggle = ({ isOn, handleToggle }: ToggleProps) => {
+    const id = uuidv4()
     return (
         <div className="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
             <input
                 type="checkbox"
                 name="toggle"
-                id="toggle"
+                id={id}
                 checked={isOn}
                 onChange={handleToggle}
                 className="absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer focus:outline-none "
             />
             <label
-                htmlFor="toggle"
+                htmlFor={id}
                 className="block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
             >
                 <span

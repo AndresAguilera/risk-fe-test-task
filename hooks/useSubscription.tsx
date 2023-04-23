@@ -7,6 +7,7 @@ interface useSubscriptionProps {
     makerToken?: string
     takerToken?: string
     onlyKnownTokens?: boolean
+    showNonsense?: boolean // used to display data that doesn't correspond with the selected token pair. Just to see render updates!
 }
 
 interface SubscriptionMessage {
@@ -22,7 +23,8 @@ interface SubscriptionMessage {
 const useSubscription = ({
     makerToken,
     takerToken,
-    onlyKnownTokens = false,
+    onlyKnownTokens,
+    showNonsense,
 }: useSubscriptionProps) => {
     const [orders, setOrders] = useState<{ order: OrderBookRow }[]>([])
 
@@ -35,8 +37,8 @@ const useSubscription = ({
                 channel: 'orders',
                 requestId: uuidv4(),
                 payload: {
-                    ...(!!takerToken && { takerToken }),
-                    ...(!!makerToken && { makerToken }),
+                    ...(!showNonsense && !!takerToken && { takerToken }),
+                    ...(!showNonsense && !!makerToken && { makerToken }),
                 },
             }
             websocket.send(JSON.stringify(subscriptionMessage))
@@ -64,7 +66,7 @@ const useSubscription = ({
             setOrders(orders)
         }
         return () => websocket.close()
-    }, [makerToken, takerToken, onlyKnownTokens])
+    }, [makerToken, takerToken, onlyKnownTokens, showNonsense])
     return orders
 }
 

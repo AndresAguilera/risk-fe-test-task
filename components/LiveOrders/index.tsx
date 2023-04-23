@@ -50,14 +50,14 @@ const LiveOrders = () => {
                 <p>*If the toggle is on, it will only display known token symbols (slower)</p>
             </div>
             <div className={'my-2'}>
-                <span className={'mr-4 italic'}>Show Only Known Tokens</span>
+                <span className={'mr-4 italic'}>Show Known Symbols Only</span>
                 <Toggle isOn={onlyKnownTokens} handleToggle={handleToggle} />
             </div>
             {orderData.map(({ label, value, sym }, i) => (
                 <span key={`label${i}`} className={'mr-4'}>
                     <span className={'font-bold'}>{label}</span>
                     <span>{!isLoading ? value : '-'}</span>
-                    {sym && <span>({sym})</span>}
+                    {sym && <span className={'ml-1'}>({sym})</span>}
                 </span>
             ))}
         </div>

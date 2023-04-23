@@ -11,7 +11,11 @@ export interface OrderBookRow extends Order {
     total: number
 }
 
-export const useOrderBook = ({ baseToken, quoteToken }: FetchOrderBookArgs) => {
+interface useOrderBookProps extends FetchOrderBookArgs {
+    showNonsense?: boolean // used to display data that doesn't correspond with the selected token pair. Just to see render updates!
+}
+
+export const useOrderBook = ({ baseToken, quoteToken, showNonsense }: useOrderBookProps) => {
     const queryClient = useQueryClient()
 
     const query = useQuery({
@@ -23,7 +27,7 @@ export const useOrderBook = ({ baseToken, quoteToken }: FetchOrderBookArgs) => {
     const makerToken = baseToken
     const takerToken = quoteToken
 
-    const orders = useSubscription({ makerToken, takerToken })
+    const orders = useSubscription({ makerToken, takerToken, showNonsense })
 
     useEffect(() => {
         if (orders.length) {
@@ -34,13 +38,16 @@ export const useOrderBook = ({ baseToken, quoteToken }: FetchOrderBookArgs) => {
             const askOrBid = isBid ? 'bids' : 'asks'
 
             const queryKey = ['order book', makerToken, takerToken]
-            queryClient.setQueriesData(queryKey, (oldData: any) => ({
-                ...oldData,
-                [askOrBid]: {
-                    ...oldData[askOrBid],
-                    records: [...oldData[askOrBid].records, ...orders],
-                },
-            }))
+            queryClient.setQueriesData(queryKey, (oldData: any) => {
+                if (!oldData) return oldData
+                return {
+                    ...oldData,
+                    [askOrBid]: {
+                        ...oldData?.[askOrBid],
+                        records: [...oldData?.[askOrBid].records, ...orders],
+                    },
+                }
+            })
         }
     }, [orders, makerToken, takerToken, queryClient])
 
